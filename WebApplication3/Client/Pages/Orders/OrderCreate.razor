@@ -1,0 +1,46 @@
+﻿@page "/orders/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3 class="card-title">Create New Order</h3>
+<hr />
+<br />
+<EditForm Model="@order" OnValidSubmit="CreateOrder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Name: </label>
+        <div>
+            <InputText @bind-Value="@order.Name" class="form-control" />
+            <ValidationMessage For="@(() => order.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Quantity: </label>
+        <div>
+            <InputNumber @bind-Value="@order.Quantity" class="form-control" />
+            <ValidationMessage For="@(() => order.Quantity)" />
+        </div>
+    </div>
+ 
+    <button type="submit" class="btn btn-success btn-block">
+        Create Order
+    </button>
+    <BackToList Target="orders" />
+</EditForm>
+
+
+@code {
+    Order order = new Order();
+    private IList<Order> Orders;
+    protected async override Task OnInitializedAsync()
+    {
+        Orders = await _client.GetFromJsonAsync<List<Order>>($"{EndPoints.OrdersEndPoint}");
+    }
+
+    private async Task CreateOrder()
+    {
+        await _client.PostAsJsonAsync(EndPoints.OrdersEndPoint, order);
+        _navManager.NavigateTo("/orders/");
+
+    }
+}

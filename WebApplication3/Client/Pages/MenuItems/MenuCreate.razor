@@ -1,0 +1,46 @@
+﻿@page "/menus/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3 class="card-title">Create New Menu Item</h3>
+<hr />
+<br />
+<EditForm Model="@menuitem" OnValidSubmit="CreateMenuItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Food Name: </label>
+        <div>
+            <InputText @bind-Value="@menuitem.FoodName" class="form-control" />
+            <ValidationMessage For="@(() => menuitem.FoodName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Cost: </label>
+        <div>
+            <InputNumber @bind-Value="@menuitem.Cost" class="form-control" />
+            <ValidationMessage For="@(() => menuitem.Cost)" />
+        </div>
+    </div>
+   
+    <button type="submit" class="btn btn-success btn-block">
+        Create Menu Item
+    </button>
+    <BackToList Target="menus" />
+</EditForm>
+
+
+@code {
+    MenuItem menuitem = new MenuItem();
+    private IList<MenuItem> MenuItems;
+    protected async override Task OnInitializedAsync()
+    {
+        MenuItems = await _client.GetFromJsonAsync<List<MenuItem>>($"{EndPoints.MenuItemsEndPoint}");
+    }
+
+    private async Task CreateMenuItem()
+    {
+        await _client.PostAsJsonAsync(EndPoints.MenuItemsEndPoint, menuitem);
+        _navManager.NavigateTo("/menus/");
+
+    }
+}

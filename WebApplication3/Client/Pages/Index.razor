@@ -1,0 +1,38 @@
+﻿@page "/"
+@page "/homepage"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager NavigationManager
+
+
+<body>
+    <h1 style="text-align:center;">Welcome to FoodieTwoShoes!</h1>
+    <br />
+    <br />
+    <div>
+        <div class="one borderstyle">
+            <p> From this app, you can deliver food from up and coming businesses straight to your doorstep </p>
+            <br />
+            <p> Choose from a variety of food and drinks from our 4 partnerned businessess </p>
+        </div>
+        <div>
+            <p>If this is your first time, please enter your details in the customer page!</p>
+            <button @onclick="NavigateToCustomerPage">Go to Customer Page</button>
+            <br />
+            <p>If you would like to view the restaurants click here!</p>
+            <button @onclick="NavigateToRestaurantPage">Go to Restaurant Page</button>
+        </div>
+    </div>
+</body>
+
+@code
+{
+    private void NavigateToRestaurantPage()
+    {
+        NavigationManager.NavigateTo("/restaurants");
+    }
+
+    private void NavigateToCustomerPage()
+    {
+        NavigationManager.NavigateTo("/customers");
+    }
+}

@@ -1,0 +1,22 @@
+﻿@page "/riders/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager  
+<h3>>Edit Rider</h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditRider" rider="rider" />
+
+@code {
+
+
+    [Parameter] public int id { get; set; }
+    Rider rider = new Rider();
+    protected async override Task OnParametersSetAsync()
+    {
+        rider = await _client.GetFromJsonAsync<Rider>($"{EndPoints.RiderEndPoint}/{id}");
+    }
+    async Task EditRider()
+    {
+        await _client.PutAsJsonAsync($"{EndPoints.RiderEndPoint}/{id}", rider);
+        _navManager.NavigateTo("/riders/");
+
+    }
+}

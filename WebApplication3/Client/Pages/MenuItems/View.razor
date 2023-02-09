@@ -1,0 +1,15 @@
+﻿@page "/menus/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3>View Menu Item</h3>
+<FormComponent menuitem="menuitem" Disabled="true" />
+@code {
+    [Parameter] public int id { get; set; }
+    MenuItem menuitem = new MenuItem();
+    protected async override Task OnParametersSetAsync()
+    {
+        menuitem = await
+        _client.GetFromJsonAsync<MenuItem>($"{EndPoints.MenuItemsEndPoint}/{id}");
+
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/menus/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3>>Edit Menu Items</h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditMenuItem" menuitem="menuitem" />
+
+@code {
+
+
+    [Parameter] public int id { get; set; }
+    MenuItem menuitem = new MenuItem();
+    protected async override Task OnParametersSetAsync()
+    {
+        menuitem = await _client.GetFromJsonAsync<MenuItem>($"{EndPoints.MenuItemsEndPoint}/{id}");
+    }
+    async Task EditMenuItem()
+    {
+        await _client.PutAsJsonAsync($"{EndPoints.MenuItemsEndPoint}/{id}", menuitem);
+        _navManager.NavigateTo("/menus/");
+
+    }
+
+}

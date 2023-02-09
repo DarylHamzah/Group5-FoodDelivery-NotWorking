@@ -1,0 +1,52 @@
+﻿@page "/riders/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3 class="card-title">Create New Rider</h3>
+<hr />
+<br />
+<EditForm Model="@rider" OnValidSubmit="CreateRider">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Name: </label>
+        <div>
+            <InputText @bind-Value="@rider.Name" class="form-control" />
+            <ValidationMessage For="@(() => rider.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Vehicle: </label>
+        <div>
+            <InputText @bind-Value="@rider.Vehicle" class="form-control" />
+            <ValidationMessage For="@(() => rider.Vehicle)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>DeliveryFee: </label>
+        <div>
+            <InputNumber @bind-Value="@rider.DeliveryFee" class="form-control" />
+            <ValidationMessage For="@(() => rider.DeliveryFee)" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        Create Rider
+    </button>
+    <BackToList Target="riders" />
+</EditForm>
+
+
+@code {
+    Rider rider = new Rider();
+    private IList<Rider> Riders;
+    protected async override Task OnInitializedAsync()
+    {
+        Riders = await _client.GetFromJsonAsync<List<Rider>>($"{EndPoints.RiderEndPoint}");
+    }
+
+    private async Task CreateRider()
+    {
+        await _client.PostAsJsonAsync(EndPoints.RiderEndPoint, rider);
+        _navManager.NavigateTo("/riders/");
+
+    }
+}

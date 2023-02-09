@@ -1,0 +1,23 @@
+﻿@page "/orders/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3>>Edit Order</h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditOrder" order="order" />
+
+@code {
+
+
+    [Parameter] public int id { get; set; }
+    Order order = new Order();
+    protected async override Task OnParametersSetAsync()
+    {
+        order = await _client.GetFromJsonAsync<Order>($"{EndPoints.OrdersEndPoint}/{id}");
+    }
+    async Task EditOrder()
+    {
+        await _client.PutAsJsonAsync($"{EndPoints.OrdersEndPoint}/{id}", order);
+        _navManager.NavigateTo("/orders/");
+
+    }
+
+}

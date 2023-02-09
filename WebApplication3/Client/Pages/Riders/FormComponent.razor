@@ -1,0 +1,43 @@
+﻿<h3>FormComponent</h3>
+<EditForm Model="@rider" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Name: </label>
+            <div>
+                <InputText @bind-Value="@rider.Name" class="form-control" />
+                <ValidationMessage For="@(() => rider.Name)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Vehicle: </label>
+            <div>
+                <InputText @bind-Value="@rider.Vehicle" class="form-control" />
+                <ValidationMessage For="@(() => rider.Vehicle)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>DeliveryFee: </label>
+            <div>
+                <InputNumber @bind-Value="@rider.DeliveryFee" class="form-control" />
+                <ValidationMessage For="@(() => rider.DeliveryFee)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    <BackToList Target="riders" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Rider rider { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

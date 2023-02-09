@@ -1,0 +1,64 @@
+﻿@page  "/menus/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+<h3> Menu Page</h3>
+<a href="/menus/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Customer
+</a>
+<br />
+<br />
+
+@if (MenuItems == null)
+{
+<div class="alert alert-info">Loading MENU...</div> }
+            else
+            {
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>FoodName</th>
+            <th>Cost</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var menuitem in MenuItems)
+        {
+<tr>
+    <td>@menuitem.FoodName</td>
+    <td>@menuitem.Cost</td>
+    <td>
+        <a href="/menus/view/@menuitem.Id" class="btn btn-primary">
+            <span class="oi oi-book"></span>
+        </a>
+        <a href="/menus/edit/@menuitem.Id" class="btn btn-warning">
+            <span class="oi oi-pencil"></span>
+        </a>
+        <button class="btn btn-danger" @onclick="@(async () => await Delete(menuitem.Id))">
+            <span class="oi oi-delete"></span>
+        </button>
+    </td>
+</tr>}
+    </tbody>
+</table>}
+
+@code
+{ private List<MenuItem> MenuItems;
+
+            protected async override Task OnInitializedAsync()
+            {
+                MenuItems = await _client.GetFromJsonAsync<List<MenuItem>>($"{EndPoints.MenuItemsEndPoint}");
+            }
+
+            async Task Delete(int menuitemId)
+            {
+                var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete the menu item with Id = {menuitemId}?");
+                if (confirm)
+                {
+                    await _client.DeleteAsync($"{EndPoints.MenuItemsEndPoint}/{menuitemId}");
+                    MenuItems = await _client.GetFromJsonAsync<List<MenuItem>>($"{EndPoints.MenuItemsEndPoint}");
+                    StateHasChanged();
+                }
+            } }

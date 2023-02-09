@@ -1,0 +1,52 @@
+﻿@page "/customers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3 class="card-title">Create New Customer</h3>
+<hr />
+<br />
+<EditForm Model="@customer" OnValidSubmit="CreateCustomer">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Name: </label>
+        <div>
+            <InputText @bind-Value="@customer.Name" class="form-control" />
+            <ValidationMessage For="@(() => customer.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Address: </label>
+        <div>
+            <InputText @bind-Value="@customer.Address" class="form-control" />
+            <ValidationMessage For="@(() => customer.Address)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Contact: </label>
+        <div>
+            <InputText @bind-Value="@customer.Contact" class="form-control" />
+            <ValidationMessage For="@(() => customer.Contact)" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        Create Customer
+    </button>
+    <BackToList Target="customers" />
+</EditForm>
+
+
+@code {
+    Customer customer = new Customer();
+    private IList<Customer> Customers;
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{EndPoints.CustomersEndPoint}");
+    }
+
+    private async Task CreateCustomer()
+    {
+        await _client.PostAsJsonAsync(EndPoints.CustomersEndPoint, customer);
+        _navManager.NavigateTo("/customers/");
+
+    }
+}
